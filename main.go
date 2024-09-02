@@ -14,7 +14,8 @@ func getCurrentTimeWithAddedMinutes(minutesToAdd int) string {
 
 	zone, _ := newTime.Zone() // Get the time zone name, ignore the offset
 
-	formattedTime := newTime.Format("03:04:05 PM " + zone)
+	// Updated format string to exclude seconds
+	formattedTime := newTime.Format("03:04 PM " + zone)
 
 	return formattedTime
 }
