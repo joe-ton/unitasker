@@ -2,23 +2,40 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
-func getCurrentTime() string {
+// Function to get current time and add a set number of minutes to it
+func getCurrentTimeWithAddedMinutes(minutesToAdd int) string {
 	currentTime := time.Now()
-	zone, _ := currentTime.Zone() // Get the time zone name, ignore the offset
 
-	formattedTime := currentTime.Format("03:04:05 PM " + zone)
+	// Add the specified number of minutes to the current time
+	newTime := currentTime.Add(time.Duration(minutesToAdd) * time.Minute)
 
-	// Replace "PDT" with "PST" if "PDT" is found in the formatted time string
-	updatedTimeString := strings.Replace(formattedTime, "PDT", "PST", 1)
+	zone, _ := newTime.Zone() // Get the time zone name, ignore the offset
 
-	return updatedTimeString
+	formattedTime := newTime.Format("03:04:05 PM " + zone)
+
+	return formattedTime
+}
+
+func askUserForAdditionalTime() (string, error) {
+	var minutesToAdd int
+	fmt.Print("Add time (in minutes): ")
+
+	_, err := fmt.Scan(&minutesToAdd)
+	if err != nil {
+		return "", err
+	}
+
+	return getCurrentTimeWithAddedMinutes(minutesToAdd), nil
 }
 
 func main() {
-	res := getCurrentTime()
-	fmt.Println(res)
+	res, err := askUserForAdditionalTime()
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
+	fmt.Println("New Time:", res)
 }
