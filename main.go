@@ -2,25 +2,35 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 )
 
-// Function to get current time and add a set number of minutes to it
-func getCurrentTimeWithAddedMinutes(minutesToAdd int) string {
-	currentTime := time.Now()
+// func getCurrentTimeWithAddedMinutes(minutesToAdd int) string {
+// 	currentTime := time.Now()
 
-	// Add the specified number of minutes to the current time
-	newTime := currentTime.Add(time.Duration(minutesToAdd) * time.Minute)
+// 	newTime := currentTime.Add(time.Duration(minutesToAdd) * time.Minute)
 
-	zone, _ := newTime.Zone() // Get the time zone name, ignore the offset
+// 	zone, _ := newTime.Zone()
 
-	// Updated format string to exclude seconds
-	formattedTime := newTime.Format("03:04 PM " + zone)
+// 	formattedTime := newTime.Format("03:04 PM " + zone)
 
-	return formattedTime
-}
+// 	return formattedTime
+// }
 
-func askUserForAdditionalTime() (string, error) {
+// func askUserForAdditionalTime() (string, error) {
+// 	var minutesToAdd int
+// 	fmt.Print("Add time (in minutes): ")
+
+// 	_, err := fmt.Scan(&minutesToAdd)
+// 	if err != nil {
+// 		return "", err
+// 	}
+
+// 	return getCurrentTimeWithAddedMinutes(minutesToAdd), nil
+// }
+
+func askUserForMinutes() (string, error) {
 	var minutesToAdd int
 	fmt.Print("Add time (in minutes): ")
 
@@ -29,14 +39,43 @@ func askUserForAdditionalTime() (string, error) {
 		return "", err
 	}
 
-	return getCurrentTimeWithAddedMinutes(minutesToAdd), nil
+	// Convert the integer to a string before returning
+	return strconv.Itoa(minutesToAdd), nil
+}
+
+func setCountDownTimer(minutes int) {
+	// Convert minutes to duration in seconds
+	countdownDuration := time.Duration(minutes) * time.Minute
+
+	// Create a new timer with the specified countdown duration
+	timer := time.NewTimer(countdownDuration)
+
+	// Inform the user that the countdown has started
+	fmt.Printf("Countdown started for %v minutes...\n", minutes)
+
+	// Block until the timer sends a signal on its channel
+	<-timer.C
+
+	// Notify the user when the countdown has finished
+	fmt.Println("Time's up!")
 }
 
 func main() {
-	res, err := askUserForAdditionalTime()
+	// Ask User for time
+	res, err := askUserForMinutes()
 	if err != nil {
-		fmt.Println("Error reading input:", err)
+		fmt.Println("Error:", err)
 		return
 	}
 	fmt.Println("New Time:", res)
+
+	// Convert the string result to an integer
+	minutes, err := strconv.Atoi(res)
+	if err != nil {
+		fmt.Println("Error converting input to integer:", err)
+		return
+	}
+
+	// Call the countdown function with the converted minutes
+	setCountDownTimer(minutes)
 }
