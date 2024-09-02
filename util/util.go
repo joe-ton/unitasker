@@ -2,6 +2,6 @@ package util
 
 import "fmt"
 
-func askUser() {
+func AskUser() {
 	fmt.Println("Ask number:")
 }

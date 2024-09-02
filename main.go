@@ -1,7 +1,7 @@
 package main
 
-import "github.com/joe-ton/util"
+import "github.com/joe-ton/unitasker/util"
 
 func main() {
-	util.AskMinutes()
+	util.AskUser()
 }
